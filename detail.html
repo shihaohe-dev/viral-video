@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0b10" />
+  <title>Detail Video - Vid18+</title>
+
+  <link rel="preconnect" href="https://esm.sh" crossorigin />
+  <link rel="preconnect" href="https://uyabibpagreajvwtznoy.supabase.co" crossorigin />
+  <link rel="modulepreload" href="js/config.js" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/detail.css" />
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-container">
+      <a class="logo" href="index.html" aria-label="Vid18+ beranda"><h1>Vid<span>18+</span></h1></a>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="detail-container">
+      <a class="back-btn" href="index.html">← Kembali</a>
+
+      <div id="video-container" class="video-container">
+        <video id="video-player" class="video-player" controls playsinline preload="none"></video>
+      </div>
+
+      <div class="video-info">
+        <h1 id="video-title" class="video-title">Memuat...</h1>
+        <div class="video-meta">
+          <span id="video-views">▶ 0 penonton</span>
+          <span id="video-category" class="video-category">Kategori</span>
+        </div>
+        <p id="video-description" class="video-description"></p>
+      </div>
+
+      <div class="action-buttons">
+        <button id="share-btn" class="action-btn share-btn">
+          <span class="btn-icon">📤</span><span class="btn-text">Share</span>
+        </button>
+        <button id="download-btn" class="action-btn download-btn">
+          <span class="btn-icon">⬇️</span><span class="btn-text">Download</span>
+        </button>
+      </div>
+
+      <section class="related-videos">
+        <h2 class="section-title">Video Lainnya</h2>
+        <div id="related-grid" class="movies-grid"></div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="js/age-gate.js"></script>
+  <script type="module" src="js/detail.js"></script>
+</body>
+</html>

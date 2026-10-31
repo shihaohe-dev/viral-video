@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0b10" />
+  <title>Vid18+ - Nonton Video Gratis</title>
+
+  <link rel="preconnect" href="https://esm.sh" crossorigin />
+  <link rel="preconnect" href="https://uyabibpagreajvwtznoy.supabase.co" crossorigin />
+  <link rel="modulepreload" href="js/config.js" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-container">
+      <a class="logo" href="index.html" aria-label="Vid18+ beranda"><h1>Vid<span>18+</span></h1></a>
+      <div class="search-box">
+        <input type="search" id="search-input" placeholder="Cari film..." autocomplete="off">
+        <button id="search-btn" aria-label="Cari">🔍</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="categories-section" aria-label="Kategori">
+      <div class="categories-container">
+        <button class="category-btn active" data-category="all">Semua</button>
+        <button class="category-btn" data-category="colmek">Colmek</button>
+        <button class="category-btn" data-category="berdua">Berdua</button>
+        <button class="category-btn" data-category="bergilir">Bergilir</button>
+        <button class="category-btn" data-category="lainnya">Lainnya</button>
+      </div>
+    </section>
+
+    <section class="tabs-section" aria-label="Urutan">
+      <div class="tabs-container">
+        <button class="tab-btn active" data-tab="recommended">Rekomendasi</button>
+        <button class="tab-btn" data-tab="latest">Terbaru</button>
+        <button class="tab-btn" data-tab="popular">Populer</button>
+      </div>
+    </section>
+
+    <section class="movies-section">
+      <div id="movies-grid" class="movies-grid">
+        <div class="skeleton-grid" aria-hidden="true">
+          <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-line"></div></div>
+          <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-line"></div></div>
+          <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-line"></div></div>
+          <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-line"></div></div>
+        </div>
+      </div>
+      <div class="load-more-wrap">
+        <button id="load-more" class="load-more-btn" hidden>Muat lebih banyak</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="js/age-gate.js"></script>
+  <script type="module" src="js/script.js"></script>
+</body>
+</html>
