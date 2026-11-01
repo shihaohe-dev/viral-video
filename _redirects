@@ -1,0 +1,2 @@
+# Alamat video: /v/judul-video-<id>  ->  halaman detail (alamat di browser tetap)
+/v/*  /detail.html  200

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - DuniaFilm</title>
+    <title>Admin Panel - Vid18+</title>
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
         <div class="login-container">
             <div class="login-card">
                 <div class="login-header">
-                    <h1>🎬 DuniaFilm</h1>
+                    <h1>🎬 Vid18+</h1>
                     <p>Admin Panel</p>
                 </div>
                 
@@ -47,7 +47,7 @@
             <!-- Header -->
             <header class="admin-header">
                 <div class="header-content">
-                    <h1>🎬 DuniaFilm</h1>
+                    <h1>🎬 Vid18+</h1>
                     <div class="header-info">
                         <span id="update-time"></span>
                         <button class="logout-btn" onclick="logout()">
@@ -296,39 +296,6 @@
                             </button>
                         </div>
                     </div>
-                    
-                    <div class="stats-section">
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <div class="stat-icon">💰</div>
-                                <div class="stat-content">
-                                    <div class="stat-value" id="ads-total">0</div>
-                                    <div class="stat-label">Total Iklan</div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">📊</div>
-                                <div class="stat-content">
-                                    <div class="stat-value" id="ads-active">0</div>
-                                    <div class="stat-label">Iklan Aktif</div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">👁️</div>
-                                <div class="stat-content">
-                                    <div class="stat-value" id="ads-impressions">0</div>
-                                    <div class="stat-label">Total Impresi</div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">🖱️</div>
-                                <div class="stat-content">
-                                    <div class="stat-value" id="ads-clicks">0</div>
-                                    <div class="stat-label">Total Klik</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="no-data">
                         <span class="no-data-icon">💰</span>
@@ -401,262 +368,9 @@
         <p>Memuat...</p>
     </div>
 
-    <style>
-        /* Mobile Responsive Styles */
-        .mobile-hidden {
-            display: inline;
-        }
-        
-        .mobile-only {
-            display: none;
-        }
-        
-        .tab-icon {
-            margin-right: 5px;
-        }
-        
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            .mobile-hidden {
-                display: none !important;
-            }
-            
-            .mobile-only {
-                display: inline !important;
-            }
-            
-            .admin-tabs {
-                flex-direction: row;
-                overflow-x: auto;
-                padding: 4px;
-            }
-            
-            .tab-btn {
-                flex: none;
-                min-width: 60px;
-                padding: 10px 8px;
-                font-size: 0.8rem;
-            }
-            
-            .tab-icon {
-                margin-right: 0;
-                font-size: 1.2rem;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
-            }
-            
-            .header-info {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .management-tools {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .search-box {
-                min-width: auto;
-            }
-            
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .movies-table {
-                font-size: 0.75rem;
-            }
-            
-            .movies-table th,
-            .movies-table td {
-                padding: 8px 4px;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                gap: 3px;
-            }
-            
-            .edit-btn,
-            .delete-btn {
-                padding: 4px 6px;
-                font-size: 0.7rem;
-                min-width: 50px;
-            }
-            
-            .section-header {
-                flex-direction: column;
-                gap: 10px;
-                align-items: flex-start;
-            }
-            
-            .table-summary {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            
-            .stat-card {
-                padding: 15px;
-            }
-            
-            .stat-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1.5rem;
-            }
-            
-            .stat-value {
-                font-size: 1.3rem;
-            }
-            
-            .recent-movies-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .modal-body {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .modal-content {
-                width: 95%;
-                margin: 10% auto;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .admin-container {
-                padding: 10px 5px;
-            }
-            
-            .admin-header {
-                padding: 10px 15px;
-            }
-            
-            .admin-header h1 {
-                font-size: 1.3rem;
-            }
-            
-            .tab-btn {
-                min-width: 50px;
-                padding: 8px 6px;
-                font-size: 0.75rem;
-            }
-            
-            .section-header h2 {
-                font-size: 1.2rem;
-            }
-            
-            .form-container {
-                padding: 15px;
-            }
-            
-            .input-with-button {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .generate-thumbnail-btn {
-                width: 100%;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .recent-movies-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .movies-table {
-                font-size: 0.7rem;
-            }
-            
-            .movie-title {
-                font-size: 0.8rem;
-            }
-            
-            .movie-desc {
-                display: none;
-            }
-        }
-        
-        /* Very small screens */
-        @media (max-width: 360px) {
-            .admin-tabs {
-                padding: 2px;
-            }
-            
-            .tab-btn {
-                min-width: 45px;
-                padding: 6px 4px;
-                font-size: 0.7rem;
-            }
-            
-            .tab-icon {
-                font-size: 1rem;
-            }
-            
-            .admin-header {
-                padding: 8px 10px;
-            }
-            
-            .admin-header h1 {
-                font-size: 1.1rem;
-            }
-        }
-    </style>
 
-    <script>
-        // Load ads statistics
-        async function loadAdsStats() {
-            try {
-                // Simulasi data statistik iklan
-                // Dalam implementasi nyata, ini akan mengambil data dari Supabase
-                const adsTotal = 12;
-                const adsActive = 8;
-                const adsImpressions = 15420;
-                const adsClicks = 324;
-                
-                document.getElementById('ads-total').textContent = adsTotal;
-                document.getElementById('ads-active').textContent = adsActive;
-                document.getElementById('ads-impressions').textContent = formatNumber(adsImpressions);
-                document.getElementById('ads-clicks').textContent = adsClicks;
-                
-            } catch (error) {
-                console.error('Error loading ads stats:', error);
-            }
-        }
-
-        // Format number for display
-        function formatNumber(num) {
-            if (num >= 1000000) {
-                return (num / 1000000).toFixed(1) + 'JT';
-            } else if (num >= 1000) {
-                return (num / 1000).toFixed(1) + 'K';
-            }
-            return num.toString();
-        }
-
-    </script>
     
     <!-- Load admin.js sebagai module -->
-    <script type="module" src="js/admin-auth.js"></script>
-    <script type="module" src="js/admin.js"></script>
+        <script type="module" src="js/admin.js"></script>
 </body>
 </html>
