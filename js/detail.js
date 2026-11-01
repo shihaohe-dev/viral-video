@@ -1,8 +1,8 @@
 import { supabase } from './config.js';
 import {
-    LIST_COLUMNS, categoryName, aspectClass, formatViews, shuffle
-} from './utils.js';
-import { createFeed } from './feed.js';
+    LIST_COLUMNS, categoryName, formatViews, shuffle, movieIdFromUrl,
+    enableImageFallback, renderGrid, skeletonHTML, messageHTML
+} from './common.js';
 import { setupPreroll } from './preroll.js';
 
 const RELATED_LIMIT = 12;
@@ -20,7 +20,7 @@ const elements = {
     relatedGrid: document.getElementById('related-grid')
 };
 
-const relatedFeed = createFeed({ container: elements.relatedGrid, pageSize: RELATED_LIMIT });
+enableImageFallback(elements.relatedGrid);
 
 // State
 let currentMovie = null;
@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function initializeApp() {
-    const movieId = new URLSearchParams(window.location.search).get('id');
+    const movieId = movieIdFromUrl();
     if (!movieId) {
-        window.location.href = 'index.html';
+        window.location.href = '/';
         return;
     }
     await loadMovieDetail(movieId);
@@ -74,11 +74,11 @@ async function loadMovieDetail(movieId) {
             currentMovie = movie;
             displayMovieDetail(movie);
         } else {
-            window.location.href = 'index.html';
+            window.location.href = '/';
         }
     } catch (error) {
         console.error('Error loading movie detail:', error);
-        window.location.href = 'index.html';
+        window.location.href = '/';
     }
 }
 
@@ -90,19 +90,19 @@ function displayMovieDetail(movie) {
     player.preload = 'none';
     player.src = movie.video_url;
 
-    elements.videoContainer.classList.add(aspectClass(movie.aspect_ratio || '16:9'));
+    elements.videoContainer.classList.add('ratio-' + String(movie.aspect_ratio || '16:9').replace(':', '-'));
     elements.videoTitle.textContent = movie.title;
     elements.videoViews.textContent = `▶ ${formatViews(movie.views)} penonton`;
     elements.videoCategory.textContent = categoryName(movie.category);
     elements.videoDescription.textContent = movie.description || 'Tidak ada deskripsi.';
     document.title = `${movie.title} - Vid18+`;
 
-    elements.videoCategory.className = 'video-category';
-    if (movie.category) elements.videoCategory.classList.add(`category-${movie.category}`);
+    elements.videoCategory.className = 'tag tag-' + (movie.category || 'lainnya');
 }
 
 // Video terkait (acak). Hanya kolom ringan dan jumlah terbatas.
 async function loadRelatedMovies() {
+    elements.relatedGrid.innerHTML = skeletonHTML(RELATED_LIMIT);
     try {
         let { data: movies, error } = await supabase
             .from('movies')
@@ -124,13 +124,13 @@ async function loadRelatedMovies() {
 
         const related = shuffle(movies || []).slice(0, RELATED_LIMIT);
         if (related.length === 0) {
-            relatedFeed.showMessage('<div class="no-movies"><p>Tidak ada video lainnya.</p></div>');
+            elements.relatedGrid.innerHTML = messageHTML('Tidak ada video lainnya.');
             return;
         }
-        relatedFeed.setItems(related);
+        renderGrid(elements.relatedGrid, related);
     } catch (error) {
         console.error('Error loading related movies:', error);
-        relatedFeed.showMessage('<div class="no-movies"><p>Gagal memuat video lainnya.</p></div>');
+        elements.relatedGrid.innerHTML = messageHTML('Gagal memuat video lainnya.');
     }
 }
 
