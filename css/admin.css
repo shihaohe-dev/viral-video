@@ -1524,3 +1524,418 @@ body {
         gap: 10px;
     }
 }
+
+/* ===== Gaya tambahan panel (dulu inline di admin.html) ===== */
+        /* Mobile Responsive Styles */
+        .mobile-hidden {
+            display: inline;
+        }
+        
+        .mobile-only {
+            display: none;
+        }
+        
+        .tab-icon {
+            margin-right: 5px;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .mobile-hidden {
+                display: none !important;
+            }
+            
+            .mobile-only {
+                display: inline !important;
+            }
+            
+            .admin-tabs {
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 4px;
+            }
+            
+            .tab-btn {
+                flex: none;
+                min-width: 60px;
+                padding: 10px 8px;
+                font-size: 0.8rem;
+            }
+            
+            .tab-icon {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .header-info {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .management-tools {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .search-box {
+                min-width: auto;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .movies-table {
+                font-size: 0.75rem;
+            }
+            
+            .movies-table th,
+            .movies-table td {
+                padding: 8px 4px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 3px;
+            }
+            
+            .edit-btn,
+            .delete-btn {
+                padding: 4px 6px;
+                font-size: 0.7rem;
+                min-width: 50px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .table-summary {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 15px;
+            }
+            
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+            
+            .stat-value {
+                font-size: 1.3rem;
+            }
+            
+            .recent-movies-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .modal-body {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-container {
+                padding: 10px 5px;
+            }
+            
+            .admin-header {
+                padding: 10px 15px;
+            }
+            
+            .admin-header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .tab-btn {
+                min-width: 50px;
+                padding: 8px 6px;
+                font-size: 0.75rem;
+            }
+            
+            .section-header h2 {
+                font-size: 1.2rem;
+            }
+            
+            .form-container {
+                padding: 15px;
+            }
+            
+            .input-with-button {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .generate-thumbnail-btn {
+                width: 100%;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .recent-movies-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .movies-table {
+                font-size: 0.7rem;
+            }
+            
+            .movie-title {
+                font-size: 0.8rem;
+            }
+            
+            .movie-desc {
+                display: none;
+            }
+        }
+        
+        /* Very small screens */
+        @media (max-width: 360px) {
+            .admin-tabs {
+                padding: 2px;
+            }
+            
+            .tab-btn {
+                min-width: 45px;
+                padding: 6px 4px;
+                font-size: 0.7rem;
+            }
+            
+            .tab-icon {
+                font-size: 1rem;
+            }
+            
+            .admin-header {
+                padding: 8px 10px;
+            }
+            
+            .admin-header h1 {
+                font-size: 1.1rem;
+            }
+        }
+
+/* ===== Panel iklan (dulu ads.css) ===== */
+/* CSS Variables untuk Iklan */
+:root {
+    --ad-bg-primary: #1a1a1a;
+    --ad-bg-secondary: #2d2d2d;
+    --ad-border-color: #404040;
+    --ad-text-primary: #ffffff;
+    --ad-text-secondary: #cccccc;
+    --ad-success: #10b981;
+    --ad-warning: #f59e0b;
+    --ad-error: #ef4444;
+    --ad-info: #3b82f6;
+}
+
+/* Styles untuk Iklan di Frontend */
+.ad-container {
+    margin: 15px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--ad-bg-primary);
+    border: 1px solid var(--ad-border-color);
+}
+
+.ad-label {
+    font-size: 0.7rem;
+    color: var(--ad-text-secondary);
+    text-align: center;
+    padding: 4px;
+    background: var(--ad-bg-secondary);
+    text-transform: uppercase;
+}
+
+.ad-banner {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+}
+
+.ad-banner-728x90 {
+    width: 728px;
+    height: 90px;
+    margin: 0 auto;
+}
+
+.ad-banner-468x60 {
+    width: 468px;
+    height: 60px;
+    margin: 0 auto;
+}
+
+.ad-banner-300x250 {
+    width: 300px;
+    height: 250px;
+    margin: 0 auto;
+}
+
+.ad-banner-300x600 {
+    width: 300px;
+    height: 600px;
+    margin: 0 auto;
+}
+
+.ad-popup {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ad-popup-content {
+    background: var(--ad-bg-primary);
+    padding: 20px;
+    border-radius: 12px;
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+}
+
+.ad-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--ad-error);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ad-interstitial {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--ad-bg-primary);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ad-countdown {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--ad-warning);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+/* Responsive Ads */
+@media (max-width: 768px) {
+    .ad-banner-728x90,
+    .ad-banner-468x60 {
+        width: 100%;
+        height: auto;
+        max-width: 320px;
+    }
+    
+    .ad-banner-300x600 {
+        width: 100%;
+        height: auto;
+        max-width: 300px;
+    }
+}
+
+/* Admin Ads Styles */
+.ads-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.ad-stat-card {
+    background: var(--bg-card);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.ad-stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
+
+.ad-stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.ad-platform-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.platform-adsterra { background: #ff6b35; color: white; }
+.platform-rollerads { background: #4ecdc4; color: white; }
+.platform-google_adsense { background: #4285f4; color: white; }
+.platform-custom { background: #666; color: white; }
+
+.ad-type-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.type-banner { background: var(--info-color); color: white; }
+.type-popup { background: var(--warning-color); color: white; }
+.type-interstitial { background: var(--error-color); color: white; }
+.type-native { background: var(--success-color); color: white; }
+.type-video { background: #8b5cf6; color: white; }
+
+.status-active { color: var(--success-color); }
+.status-inactive { color: var(--error-color); }
