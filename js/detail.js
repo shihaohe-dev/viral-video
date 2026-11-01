@@ -3,6 +3,7 @@ import {
     LIST_COLUMNS, categoryName, aspectClass, formatViews, shuffle
 } from './utils.js';
 import { createFeed } from './feed.js';
+import { setupPreroll } from './preroll.js';
 
 const RELATED_LIMIT = 12;
 
@@ -24,6 +25,7 @@ const relatedFeed = createFeed({ container: elements.relatedGrid, pageSize: RELA
 // State
 let currentMovie = null;
 let viewCounted = false;
+let preroll = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await initializeApp();
@@ -37,7 +39,10 @@ async function initializeApp() {
         return;
     }
     await loadMovieDetail(movieId);
-    if (currentMovie) await loadRelatedMovies();
+    if (currentMovie) {
+        preroll = setupPreroll({ player: elements.videoPlayer, container: elements.videoContainer });
+        await loadRelatedMovies();
+    }
 }
 
 function setupEventListeners() {
@@ -46,6 +51,8 @@ function setupEventListeners() {
 
     // Tambah views satu kali per kunjungan (bukan setiap pause/play)
     elements.videoPlayer.addEventListener('play', async () => {
+        // Putaran iklan tidak dihitung sebagai views
+        if (preroll && preroll.isAdActive()) return;
         if (currentMovie && !viewCounted) {
             viewCounted = true;
             await updateMovieViews(currentMovie.id);
