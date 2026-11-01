@@ -138,7 +138,10 @@ export function movieIdFromUrl() {
     if (old) return old;
     const last = decodeURIComponent(location.pathname.split('/').filter(Boolean).pop() || '');
     const m = last.match(/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|\d+)$/i);
-    return m ? m[1] : null;
+    if (m) return m[1];
+    // Cadangan: id berupa kode lain (huruf+angka) setelah tanda "-" terakhir
+    const tail = last.split('-').pop();
+    return tail && tail !== last ? tail : null;
 }
 
 // ---------- Kartu & grid (semua thumbnail berukuran sama: 16:9) ----------

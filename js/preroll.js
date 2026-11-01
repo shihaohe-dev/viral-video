@@ -3,6 +3,7 @@
 
 export const PREROLL_CONFIG = {
     enabled: true,
+    autoplay: true,         // iklan diputar otomatis (tanpa suara) saat pemutar muncul; false = harus tekan tombol putar
     vastUrl: 'https://gregariousstretch.com/dCm_FMz.drGKN/vXZoGSUA/Kewmh9euEZ/UOl/kKP/TJcX1WOsDJMKwOMDT/c_t/NazyUu4QMfz/A/yUMsQK',
     fetchTimeoutMs: 6000,   // batas waktu mengambil VAST
     startTimeoutMs: 8000,   // batas waktu iklan mulai tayang sebelum dilewati
@@ -25,10 +26,11 @@ function injectStyles() {
     .preroll-ui { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
     .preroll-label { position: absolute; top: 10px; left: 10px; padding: 3px 10px; border-radius: 999px;
         background: rgba(0,0,0,.7); color: #fff; font-size: .75rem; font-weight: 600; }
-    .preroll-visit, .preroll-skip { position: absolute; pointer-events: auto; border: 0; cursor: pointer;
+    .preroll-visit, .preroll-skip, .preroll-sound { position: absolute; pointer-events: auto; border: 0; cursor: pointer;
         border-radius: 8px; background: rgba(0,0,0,.75); color: #fff; font-size: .8rem; font-weight: 600; padding: 8px 14px; }
     .preroll-visit { top: 10px; right: 10px; }
     .preroll-skip { right: 10px; bottom: 14px; }
+    .preroll-sound { left: 10px; bottom: 14px; }
     .preroll-skip[disabled] { opacity: .8; cursor: default; }
     `;
     document.head.appendChild(style);
@@ -159,7 +161,7 @@ export function setupPreroll({ player, container }) {
 
     // Ambil VAST di awal agar siap saat tombol ditekan
     loadVast(PREROLL_CONFIG.vastUrl)
-        .then(data => { adData = data; })
+        .then(data => { adData = data; tryAutoStart(); })
         .catch(err => {
             console.warn('Iklan tidak dimuat:', err);
             startBtn.remove(); // tanpa iklan: pemutar normal
@@ -167,14 +169,36 @@ export function setupPreroll({ player, container }) {
 
     startBtn.addEventListener('click', () => {
         if (!adData) { playContent(); return; } // iklan belum siap -> langsung video
-        startAd(adData);
+        startAd(adData, false);
     });
 
-    function startAd(ad) {
+    // ---------- Putar otomatis: setelah konfirmasi 18+, iklan siap, dan pemutar terlihat ----------
+    let autoTried = false;
+    function tryAutoStart() {
+        if (!PREROLL_CONFIG.autoplay || autoTried || adActive || !adData) return;
+        if (document.hidden || document.documentElement.classList.contains('age-locked')) return;
+        const rect = container.getBoundingClientRect();
+        const visible = rect.bottom > 0 && rect.top < window.innerHeight &&
+            Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0) >= rect.height * 0.4;
+        if (!visible || !startBtn.isConnected) return;
+        autoTried = true;
+        startAd(adData, true);
+    }
+    if (PREROLL_CONFIG.autoplay) {
+        if ('IntersectionObserver' in window) {
+            new IntersectionObserver(tryAutoStart, { threshold: [0.4] }).observe(container);
+        }
+        document.addEventListener('visibilitychange', tryAutoStart);
+        new MutationObserver(tryAutoStart).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    function startAd(ad, auto) {
         adActive = true;
         startBtn.remove();
         player.controls = false;
         player.preload = 'auto';
+        // Putar otomatis hanya diizinkan browser jika tanpa suara; ketukan pengguna boleh bersuara
+        player.muted = !!auto;
         let mediaIndex = 0;
         player.src = ad.mediaUrls[0];
 
@@ -205,6 +229,16 @@ export function setupPreroll({ player, container }) {
                 endAd();
             });
             ui.appendChild(skipBtn);
+        }
+
+        let soundBtn = null;
+        if (auto) {
+            soundBtn = document.createElement('button');
+            soundBtn.type = 'button';
+            soundBtn.className = 'preroll-sound';
+            soundBtn.textContent = '🔇 Nyalakan suara';
+            soundBtn.addEventListener('click', () => { player.muted = false; soundBtn.remove(); soundBtn = null; });
+            ui.appendChild(soundBtn);
         }
 
         const label = ui.querySelector('.preroll-label');
@@ -291,7 +325,7 @@ export function setupPreroll({ player, container }) {
             if (!started) { firePixels(ad.errors, 402); endAd(); }
         }, PREROLL_CONFIG.startTimeoutMs);
 
-        function endAd() {
+        function endAd(resume = true) {
             if (!adActive) return;
             adActive = false;
             clearTimeout(watchdog);
@@ -304,10 +338,17 @@ export function setupPreroll({ player, container }) {
             document.removeEventListener('visibilitychange', resumeIfPaused);
             ui.remove();
 
-            // Kembali ke video utama dan putar otomatis
+            // Kembali ke video utama
             player.src = contentSrc;
             player.load();
-            playContent();
+            if (resume) {
+                playContent();
+            } else {
+                // Autoplay diblokir browser: tampilkan lagi tombol putar, iklan tetap diputar saat diketuk
+                player.muted = false;
+                player.controls = true;
+                container.appendChild(startBtn);
+            }
         }
 
         player.addEventListener('playing', onPlaying);
@@ -319,8 +360,12 @@ export function setupPreroll({ player, container }) {
         document.addEventListener('visibilitychange', resumeIfPaused);
 
         player.play().catch((err) => {
-            // Autoplay diblokir -> lewati iklan. Error lain ditangani event 'error' / watchdog.
-            if (err && err.name === 'NotAllowedError') { firePixels(ad.errors, 400); endAd(); }
+            // Autoplay diblokir: otomatis -> kembali ke tombol putar; ketukan pengguna -> lewati iklan.
+            // Error lain ditangani event 'error' / watchdog.
+            if (err && err.name === 'NotAllowedError') {
+                if (auto) endAd(false);
+                else { firePixels(ad.errors, 400); endAd(); }
+            }
         });
     }
 

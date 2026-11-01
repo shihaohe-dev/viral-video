@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function initializeApp() {
     const movieId = movieIdFromUrl();
     if (!movieId) {
-        window.location.href = '/';
+        showError('Alamat video tidak valid.');
         return;
     }
     await loadMovieDetail(movieId);
@@ -74,12 +74,24 @@ async function loadMovieDetail(movieId) {
             currentMovie = movie;
             displayMovieDetail(movie);
         } else {
-            window.location.href = '/';
+            showError('Video tidak ditemukan.');
         }
     } catch (error) {
         console.error('Error loading movie detail:', error);
-        window.location.href = '/';
+        showError('Video tidak ditemukan atau gagal dimuat.');
     }
+}
+
+// Tampilkan pesan di halaman (jangan dialihkan diam-diam ke beranda)
+function showError(message) {
+    document.title = 'Video tidak ditemukan - Vid18+';
+    elements.videoContainer.hidden = true;
+    elements.videoTitle.textContent = message;
+    elements.videoViews.textContent = '';
+    elements.videoCategory.hidden = true;
+    elements.videoDescription.innerHTML = 'Link mungkin salah atau video sudah dihapus. <a href="/">Kembali ke beranda</a>.';
+    document.querySelector('.actions').hidden = true;
+    document.querySelector('.related').hidden = true;
 }
 
 function displayMovieDetail(movie) {
