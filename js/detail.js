@@ -1,6 +1,6 @@
 import { supabase } from './config.js';
 import {
-    LIST_COLUMNS, categoryName, formatViews, shuffle, movieIdFromUrl,
+    LIST_COLUMNS, categoryName, formatViews, shuffle, movieIdFromUrl, embedUrlFor,
     enableImageFallback, renderGrid, skeletonHTML, messageHTML
 } from './common.js';
 import { setupPreroll } from './preroll.js';
@@ -26,6 +26,7 @@ enableImageFallback(elements.relatedGrid);
 let currentMovie = null;
 let viewCounted = false;
 let preroll = null;
+let usesEmbed = false; // true jika video diputar lewat iframe (Google Drive/YouTube/Vimeo)
 
 document.addEventListener('DOMContentLoaded', async () => {
     await initializeApp();
@@ -40,7 +41,8 @@ async function initializeApp() {
     }
     await loadMovieDetail(movieId);
     if (currentMovie) {
-        preroll = setupPreroll({ player: elements.videoPlayer, container: elements.videoContainer });
+        // Iklan pre-roll hanya untuk file video langsung (embed tidak bisa disisipi iklan)
+        if (!usesEmbed) preroll = setupPreroll({ player: elements.videoPlayer, container: elements.videoContainer });
         await loadRelatedMovies();
     }
 }
@@ -50,13 +52,10 @@ function setupEventListeners() {
     elements.downloadBtn.addEventListener('click', handleDownload);
 
     // Tambah views satu kali per kunjungan (bukan setiap pause/play)
-    elements.videoPlayer.addEventListener('play', async () => {
+    elements.videoPlayer.addEventListener('play', () => {
         // Putaran iklan tidak dihitung sebagai views
         if (preroll && preroll.isAdActive()) return;
-        if (currentMovie && !viewCounted) {
-            viewCounted = true;
-            await updateMovieViews(currentMovie.id);
-        }
+        countViewOnce();
     });
 }
 
@@ -94,13 +93,41 @@ function showError(message) {
     document.querySelector('.related').hidden = true;
 }
 
+async function countViewOnce() {
+    if (!currentMovie || viewCounted) return;
+    viewCounted = true;
+    await updateMovieViews(currentMovie.id);
+}
+
+// Putar lewat iframe untuk link Google Drive / YouTube / Vimeo
+function showEmbed(src) {
+    usesEmbed = true;
+    elements.videoPlayer.removeAttribute('src');
+    elements.videoPlayer.hidden = true;
+
+    const frame = document.createElement('iframe');
+    frame.className = 'video-embed';
+    frame.src = src;
+    frame.title = currentMovie.title;
+    frame.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
+    frame.allowFullscreen = true;
+    frame.referrerPolicy = 'no-referrer';
+    frame.addEventListener('load', countViewOnce, { once: true });
+    elements.videoContainer.appendChild(frame);
+}
+
 function displayMovieDetail(movie) {
     const player = elements.videoPlayer;
 
     // Poster hanya bila thumbnail tersimpan di database; video baru dimuat saat ditekan play
-    if (movie.thumbnail_url) player.poster = movie.thumbnail_url;
-    player.preload = 'none';
-    player.src = movie.video_url;
+    const embed = embedUrlFor(movie.video_url);
+    if (embed) {
+        showEmbed(embed);
+    } else {
+        if (movie.thumbnail_url) player.poster = movie.thumbnail_url;
+        player.preload = 'none';
+        player.src = movie.video_url;
+    }
 
     elements.videoContainer.classList.add('ratio-' + String(movie.aspect_ratio || '16:9').replace(':', '-'));
     elements.videoTitle.textContent = movie.title;

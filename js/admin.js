@@ -7,6 +7,7 @@ let selectedMovies = new Set();
 let videoElement = null;
 let thumbnailCanvas = null;
 let currentVideoUrl = '';
+let editingMovieId = null; // null = form dalam mode tambah; berisi id = mode edit
 
 // Inisialisasi aplikasi
 document.addEventListener('DOMContentLoaded', async () => {
@@ -50,7 +51,7 @@ function setupEventListeners() {
   // Form submission
   const movieForm = document.getElementById('movie-form');
   if (movieForm) {
-    movieForm.addEventListener('submit', handleAddMovie);
+    movieForm.addEventListener('submit', handleMovieSubmit);
   }
 
   // Search functionality
@@ -581,11 +582,20 @@ function displayRecentMovies(movies) {
   }).join('');
 }
 
+// Satu-satunya handler submit form film: tambah atau edit, tergantung mode.
+// (Dulu form punya dua handler sekaligus, sehingga saat edit film malah ikut ditambahkan lagi.)
+function handleMovieSubmit(e) {
+  e.preventDefault();
+  if (editingMovieId !== null) return handleEditMovie(e, editingMovieId);
+  return handleAddMovie(e);
+}
+
 // Handle add movie
 async function handleAddMovie(e) {
   e.preventDefault();
   
   const submitBtn = e.target.querySelector('.submit-btn');
+  if (submitBtn.disabled) return; // sedang menyimpan
   const title = document.getElementById('movie-title').value.trim();
   const videoUrl = document.getElementById('movie-video-url').value.trim();
 
@@ -956,15 +966,8 @@ window.editMovie = async function(movieId) {
     submitBtn.innerHTML = '<span class="btn-icon">💾</span> Update Film';
     submitBtn.dataset.editId = movieId;
     
-    // Update form submission untuk edit mode
-    const form = document.getElementById('movie-form');
-    const originalHandler = form.onsubmit;
-    
-    form.onsubmit = async (e) => {
-      await handleEditMovie(e, movieId);
-      // Restore original handler after edit
-      form.onsubmit = originalHandler;
-    };
+    // Masuk mode edit: handleMovieSubmit akan memanggil handleEditMovie
+    editingMovieId = movie.id;
     
     // Update preview
     updateFormPreview();
@@ -978,6 +981,7 @@ async function handleEditMovie(e, movieId) {
   e.preventDefault();
   
   const submitBtn = e.target.querySelector('.submit-btn');
+  if (submitBtn.disabled) return; // sedang menyimpan
   const title = document.getElementById('movie-title').value.trim();
   const videoUrl = document.getElementById('movie-video-url').value.trim();
 
@@ -1022,9 +1026,8 @@ async function handleEditMovie(e, movieId) {
     submitBtn.innerHTML = '<span class="btn-icon">💾</span> Simpan Film';
     delete submitBtn.dataset.editId;
     
-    // Kembalikan form submission ke mode tambah
-    const form = document.getElementById('movie-form');
-    form.onsubmit = handleAddMovie;
+    // Kembali ke mode tambah
+    editingMovieId = null;
     
     document.getElementById('form-preview').innerHTML = `
       <div class="preview-placeholder">
@@ -1046,7 +1049,9 @@ async function handleEditMovie(e, movieId) {
     showNotification('Gagal mengupdate film: ' + error.message, 'error');
   } finally {
     submitBtn.disabled = false;
-    submitBtn.innerHTML = '<span class="btn-icon">💾</span> Update Film';
+    submitBtn.innerHTML = editingMovieId !== null
+      ? '<span class="btn-icon">💾</span> Update Film'
+      : '<span class="btn-icon">💾</span> Simpan Film';
   }
 }
 

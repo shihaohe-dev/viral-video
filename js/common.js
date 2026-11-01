@@ -119,6 +119,38 @@ export function enableImageFallback(container) {
     }, true);
 }
 
+// ---------- Link yang harus diputar lewat embed (bukan tag <video>) ----------
+// Link halaman Google Drive / YouTube / Vimeo bukan file video, jadi tidak bisa dipakai di <video src>.
+export function embedUrlFor(url) {
+    try {
+        const u = new URL(String(url || '').trim());
+        const host = u.hostname.replace(/^www\./, '');
+
+        if (host === 'drive.google.com' || host === 'drive.usercontent.google.com' || host === 'docs.google.com') {
+            const m = u.pathname.match(/\/file\/d\/([\w-]+)/);
+            const id = m ? m[1] : u.searchParams.get('id');
+            if (id) return `https://drive.google.com/file/d/${id}/preview`;
+        }
+
+        if (host === 'youtube.com' || host === 'm.youtube.com' || host === 'youtu.be') {
+            let id = null;
+            if (host === 'youtu.be') id = u.pathname.slice(1).split('/')[0];
+            else if (u.pathname === '/watch') id = u.searchParams.get('v');
+            else {
+                const p = u.pathname.match(/^\/(?:shorts|embed|live)\/([\w-]{11})/);
+                if (p) id = p[1];
+            }
+            if (id && /^[\w-]{11}$/.test(id)) return `https://www.youtube.com/embed/${id}?rel=0&playsinline=1`;
+        }
+
+        if (host === 'vimeo.com' || host === 'player.vimeo.com') {
+            const m = u.pathname.match(/(\d{6,})/);
+            if (m) return `https://player.vimeo.com/video/${m[1]}`;
+        }
+    } catch (e) { /* bukan URL valid -> anggap file video biasa */ }
+    return null;
+}
+
 // ---------- Alamat video: /v/judul-video-<id> ----------
 // Id di ujung membuat alamat selalu unik, jadi dua video berjudul sama tidak bentrok.
 export function slugify(text) {
